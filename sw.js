@@ -1,45 +1,42 @@
-const cacheName = 'news-v1';
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
+
+if (workbox) {
+  console.log(`Yay! Workbox is loaded 🎉`);
+} else {
+  console.log(`Boo! Workbox didn't load 😬`);
+}
 
 const staticAssets = [
-  './',
-  './app.js',
-  './styles.css',
-  './fallback.json',
-  './images/fetch-dog.jpg'
+    './fallback.json',
+    './images/fetch-dog.jpg'
 ];
+workbox.precaching.precacheAndRoute(staticAssets);
+workbox.routing.registerRoute(
+    /\.(?:png|gif|jpg|jpeg|svg)$/,
+    workbox.strategies.cacheFirst({
+        cacheName: 'images-cache',
+        plugins: [
+            new workbox.expiration.Plugin({
+                maxEntries: 20,
+                maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+            }),
+        ],
+    }),
+);
 
-self.addEventListener('install', async function () {
-  const cache = await caches.open(cacheName);
-  cache.addAll(staticAssets);
+workbox.routing.registerRoute(
+    //css,js file under in this page will be cached
+    /\//,
+    // Use cache but update in the background ASAP
+    workbox.strategies.staleWhileRevalidate({
+        // Use a custom cache name
+        cacheName: 'root',
+    })
+);
+
+const fallbackJson = './fallback.json';
+const apiHandler = workbox.strategies.networkFirst();
+    workbox.routing.registerRoute(/.*(?:newsapi\.org).*$/, ({ event }) => {
+    return apiHandler.handle({ event })
+        .catch(() => caches.match(fallbackJson));
 });
-
-self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', event => {
-  const request = event.request;
-  const url = new URL(request.url);
-  if (url.origin === location.origin) {
-    event.respondWith(cacheFirst(request));
-  } else {
-    event.respondWith(networkFirst(request));
-  }
-});
-
-async function cacheFirst(request) {
-  const cachedResponse = await caches.match(request);
-  return cachedResponse || fetch(request);
-}
-
-async function networkFirst(request) {
-  const dynamicCache = await caches.open('news-dynamic');
-  try {
-    const networkResponse = await fetch(request);
-    dynamicCache.put(request, networkResponse.clone());
-    return networkResponse;
-  } catch (err) {
-    const cachedResponse = await dynamicCache.match(request);
-    return cachedResponse || await caches.match('./fallback.json');
-  }
-}
