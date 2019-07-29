@@ -1,5 +1,0 @@
-﻿1. 本地localhost域名访问，需要部署到IIS上。(否则service work无效)
-2. 部署时，端口要不设置的太特殊，否则chrome访问会报错，8000，8080，8090等等都可以。
-3. 网络上访问需要部署到https服务器上查看（可以用firebase等）(否则service work无效)
-4. sw一般需要放到项目根目录.
-5. 缓存网页时，页面里包含的css和js也会按同样的策略缓存，不需要precache css和js
