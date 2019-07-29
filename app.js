@@ -1,6 +1,6 @@
 const apiKey = '143f227feab4457db1f4b368d88f34da'
 //const defaultSource = 'the-washington-post';
-const defaultSource = 'the-washington-post';
+const defaultSource = 'All Sources';
 const sourceSelector = document.querySelector('#sources');
 const newsArticles = document.querySelector('main');
 const searchBtn=document.querySelector("#searchBtn");
@@ -16,11 +16,10 @@ if ('serviceWorker' in navigator) {
 window.addEventListener('load', e => {
   sourceSelector.addEventListener('change', evt => updateNews(evt.target.value));
   updateNewsSources().then(() => {
-    sourceSelector.value = defaultSource;
-    updateNews();
-  });
+      sourceSelector.value = defaultSource;
+      updateNews();
+   });
 });
-
 window.addEventListener('online', () => updateNews(sourceSelector.value));
 
 async function updateNewsSources() {
@@ -30,14 +29,20 @@ async function updateNewsSources() {
     json.sources
       .map(source => `<option value="${source.id}">${source.name}</option>`)
       .join('\n');
+	  sourceSelector.insertAdjacentHTML("afterbegin", `<option value="All Sources">All Sources</option>`);
 }
 
 async function updateNews(source = defaultSource) {
   newsArticles.innerHTML = '';
-  const response = await fetch(`https://newsapi.org/v2/top-headlines?sources=${source}&sortBy=top&apiKey=${apiKey}`);
-  const json = await response.json();
-  newsArticles.innerHTML =
+  document.getElementById("searchTxt").value='';
+  if(source=="All Sources")
+	  searchNews();
+  else{
+	const response = await fetch(`https://newsapi.org/v2/top-headlines?sources=${source}&sortBy=top&apiKey=${apiKey}`);
+	const json = await response.json();
+	newsArticles.innerHTML =
     json.articles.map(createArticle).join('\n');
+  }
 }
 
 function createArticle(article) {
@@ -53,6 +58,7 @@ function createArticle(article) {
 }
 
 async function searchNews() {
+  sourceSelector.value = defaultSource;
   var searchTxt=document.querySelector("#searchTxt").value;
   newsArticles.innerHTML = '';
   var response;
@@ -74,4 +80,12 @@ function goToTop() {
   }else{
     topBtn.style.display = 'none';
   }
+}
+
+async function loadHeadlines() {
+  newsArticles.innerHTML = '';
+  const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`);
+  const json = await response.json();
+  newsArticles.innerHTML =
+    json.articles.map(createArticle).join('\n');
 }
