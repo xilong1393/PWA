@@ -14,14 +14,16 @@
 <body id="body">
   <header>
     <h1>Global news</h1>
-    <select id="sources"></select>
-  </header>
-      <div class="topnav">
+	<div class="topnav">
       <form action="javascript:searchNews()">
         <input type="text" id="searchTxt" placeholder="Search..">
         <button type="submit" id="searchBtn"><i class="fa fa-search"></i></button>
       </form>
     </div>
+	<div class="sourceSelect">
+		<select id="sources"></select>
+	</div>
+  </header>
   <main></main>
 	<div id="returnToTop">
 	  <li><a href="#body"><i class="fas fa-chevron-circle-up fa-2x"></i></a></li>
