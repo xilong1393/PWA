@@ -48,3 +48,27 @@ function createArticle(article) {
     </div>
   `;
 }
+
+async function searchNews() {
+  var searchTxt=document.querySelector("#searchTxt").value;
+  newsArticles.innerHTML = '';
+  var response;
+  if(searchTxt.trim()=="")
+      response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`);
+  else 
+      response = await fetch(`https://newsapi.org/v2/top-headlines?q=${searchTxt}&apiKey=${apiKey}`);
+  const json = await response.json();
+  newsArticles.innerHTML =
+    json.articles.map(createArticle).join('\n');
+}
+
+window.addEventListener('scroll', () => goToTop());
+function goToTop() {
+  var top = document.documentElement.scrollTop || document.body.scrollTop;
+  if(top>100)
+  {
+    topBtn.style.display = 'block';
+  }else{
+    topBtn.style.display = 'none';
+  }
+}
