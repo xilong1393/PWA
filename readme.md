@@ -1,6 +1,6 @@
 # Simple PWA example 
 
-Online demo can be found on https://marcushellberg.github.io/alternative-news
+Online demo can be found on https://xilong1393.github.io/
 
 ## Running locally
 
