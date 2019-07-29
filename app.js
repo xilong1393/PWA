@@ -1,4 +1,4 @@
-const apiKey = 'ab9d074155954ba78db4681fa86e7aae';
+const apiKey = '143f227feab4457db1f4b368d88f34da'
 const defaultSource = 'the-washington-post';
 const sourceSelector = document.querySelector('#sources');
 const newsArticles = document.querySelector('main');
