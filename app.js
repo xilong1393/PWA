@@ -2,6 +2,8 @@ const apiKey = '143f227feab4457db1f4b368d88f34da'
 const defaultSource = 'the-washington-post';
 const sourceSelector = document.querySelector('#sources');
 const newsArticles = document.querySelector('main');
+const searchBtn=document.querySelector("#searchBtn");
+const topBtn=document.querySelector("#returnToTop");
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () =>
